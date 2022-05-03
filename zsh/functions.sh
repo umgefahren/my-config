@@ -34,3 +34,7 @@ goto () {
 		    echo "Parameter(s) $@ is unknown"
 	  fi
 }
+
+findmorehelp () {
+	  eval "find-help $@ -d | less"
+}

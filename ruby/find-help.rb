@@ -9,7 +9,8 @@ GO_LONG_HELP_FLAG = '-help'
 COMMAND_NOT_FOUND_EXP = Regexp.new "zsh: command not found:"
 MAN_PAGE_NOT_FOUND_EXP = Regexp.new "No manual entry for"
 
-outlimit = 10
+outlimit = 0
+color = true
 
 options = {}
 
@@ -29,6 +30,10 @@ OptionParser.new do |parser|
     outlimit = limit
   end
 
+  parser.on("-d", "--no-color", "Disable colorfull output") do
+    color = false
+  end
+
   parser.on("-h", "--help", "Prints this help") do 
     puts parser
     exit 
@@ -38,9 +43,13 @@ end.parse!
 
 def run_command(command_name)
   output = ""
-  Open3.popen2e(command_name) {|i, o, t|
-    output = o.read
-  }
+  begin
+    Open3.popen2e(command_name) {|i, o, t|
+      output = o.read
+    }
+  rescue Errno::ENOENT
+    output = "No manual entry for"
+  end
   output
 end
 
@@ -100,8 +109,16 @@ variants.each do |variant|
 end
 
 variant_with_match.each do |(variant, match)|
-  color_length = match.length > 0 ? "\e[32m#{match.length}\e[0m" : "\e[31m#{match.length}\e[0m"
-  puts "Found \e[1m#{color_length}\e[22m results in output of command `#{variant}`"
+  if color
+    color_length = match.length > 0 ? "\e[32m#{match.length}\e[0m" : "\e[31m#{match.length}\e[0m"
+    puts "Found \e[1m#{color_length}\e[22m results in output of command `#{variant}`"
+  else
+    puts "Found #{match.length} results in output of command #{variant}"
+  end
+end
+
+if outlimit == 0
+  exit
 end
 
 already_printed_matches = []
@@ -110,7 +127,12 @@ already_printed_variants = []
 variant_with_match.each do |(variant, matches)|
   unless matches.length == 0
     joined_matches = matches.join
-    puts "\e[31m Output of #{variant}:\e[0m"
+    output_of_string = " Output of #{variant}:"
+    if color
+      puts "\e[31m#{output_of_string}\e[0m"
+    else 
+      puts output_of_string
+    end
     unless already_printed_matches.include? joined_matches
       puts "\n"
       print_match(matches, outlimit)
@@ -120,7 +142,13 @@ variant_with_match.each do |(variant, matches)|
       variant_index = already_printed_matches.index joined_matches
       already_variant = already_printed_variants[variant_index]
 
-      puts "\e[37mOuput was already printed with #{already_variant}\e[0m"
+      already_string = "Ouput was already printed with #{already_variant}"
+
+      if color 
+        puts "\e[37m#{already_string}\e[0m"
+      else
+        puts already_string
+      end
     end
     puts "\n"
   end
