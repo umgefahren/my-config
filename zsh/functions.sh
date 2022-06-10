@@ -8,16 +8,16 @@ goto () {
 
 	  if [[ "$gotoAlias" = "my-config" ]]
 	  then 
-		    echo "$HOME/my-config/"
+		    cd "$HOME/my-config/"
 	  elif [[ "$gotoAlias" = "drafts" ]]
 	  then
-		    echo "$HOME/drafts/"
+		    cd "$HOME/drafts/"
 	  elif [[ "$gotoAlias" = "home" ]]
 	  then
-		    echo "$HOME"
+		    cd "$HOME"
 	  elif [[ "$gotoAlias" = "tmp" ]]
 	  then
-		    echo "/tmp/"
+		    cd "/tmp/"
 	  elif [[ "$gotoAlias" = "mktmp" ]]
 	  then
 		    cdd /tmp/$(uuidgen)
