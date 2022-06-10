@@ -2,11 +2,15 @@ call plug#begin()
 " Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 " Plug 'Shougo/deoplete.nvim', { 'do' : ':UpdateRemotePlugins' }
 Plug 'neoclide/coc.nvim', {'branch' : 'release' }
-Plug 'https://github.com/preservim/tagbar.git'
-Plug 'dracula/vim', {'as' : 'dracula' }
 Plug 'elixir-editors/vim-elixir'
+Plug 'dracula/vim', {'as' : 'dracula' }
+Plug 'ziglang/zig.vim'
+Plug  'github/copilot.vim' 
+" Plug 'elixir-editors/vim-elixir'
+
 " Plug 'kyazdani42/nvim-web-devicons'
 " Plug 'kyazdani42/nvim-tree.lua'
+
 call plug#end()
 
 " let g:deoplete#enable_at_startup = 1
@@ -15,59 +19,15 @@ set number
 
 command NvimConfig e ~/.config/nvim/init.vim
 
-let g:tagbar_type_go = {
-	\ 'ctagstype' : 'go',
-	\ 'kinds'     : [
-		\ 'p:package',
-		\ 'i:imports:1',
-		\ 'c:constants',
-		\ 'v:variables',
-		\ 't:types',
-		\ 'n:interfaces',
-		\ 'w:fields',
-		\ 'e:embedded',
-		\ 'm:methods',
-		\ 'r:constructor',
-		\ 'f:functions'
-	\ ],
-	\ 'sro' : '.',
-	\ 'kind2scope' : {
-		\ 't' : 'ctype',
-		\ 'n' : 'ntype'
-	\ },
-	\ 'scope2kind' : {
-		\ 'ctype' : 't',
-		\ 'ntype' : 'n'
-	\ },
-	\ 'ctagsbin'  : 'gotags',
-	\ 'ctagsargs' : '-sort -silent'
-\ }
+syntax on
+
 
 color dracula
 
-function OpenTagbar()
-	TagbarOpen
-endfunction
+set relativenumber
+set rnu
+set expandtab
 
-au BufNewFile,BufRead *.go call OpenTagbar()
+set termguicolors
 
-function DocuViewer(crate)
-	let crate_name = a:crate
-	if expand("%:e") == "rs"
-		let url = "https://docs.rs/" . crate_name . "/"
-		execute "! open " . url
-	endif
-endfunction
-
-command! -nargs=1 Docu call DocuViewer(<args>)
-
-" Coc Config
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-
-syntax on
-
-filetype plugin indent on
-set shiftwidth=10
+set mouse=nv
