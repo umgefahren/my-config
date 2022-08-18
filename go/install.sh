@@ -9,4 +9,8 @@ cd timer
 go install 
 cd ..
 
+cd unicode
+go install
+cd ..
+
 cd $PWD
