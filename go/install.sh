@@ -13,4 +13,12 @@ cd unicode
 go install
 cd ..
 
+cd uppercase
+go install
+cd ..
+
+cd lowercase
+go install
+cd ..
+
 cd $PWD
