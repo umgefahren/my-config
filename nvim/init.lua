@@ -1,5 +1,6 @@
 vim.g.loaded = 1
 vim.g.loaded_netrwPlugin = 1
+local keyset = vim.keymap.set
 
 -- plugins
 require('packer').startup(function(use)
@@ -14,91 +15,73 @@ require('packer').startup(function(use)
 	use 'kyazdani42/nvim-web-devicons'
 	use 'kyazdani42/nvim-tree.lua'
 	use 'nvim-lua/plenary.nvim'
-        use 'vim-airline/vim-airline'
-        use 'airblade/vim-gitgutter'
-        use 'mhinz/vim-signify'
-        use 'tpope/vim-fugitive'
-        use 'lambdalisue/battery.vim'
-	use {
-		'nvim-telescope/telescope.nvim', tag = '0.1.0',
-		requires = { {'nvim-lua/plenary.nvim'} }
-	}
         use {
-                'fannheyward/telescope-coc.nvim',
-                requires = { {'nvim-telescope/telescope.nvim', 'neoclide/coc.nvim'} }
-        }
-        use {
-                'pwntester/octo.nvim',
-                requires = {
-                        'nvim-lua/plenary.nvim',
-                        'nvim-telescope/telescope.nvim',
-                        'kyazdani42/nvim-web-devicons',
-                },
+                'lewis6991/gitsigns.nvim',
+                tag = 'release',
                 config = function ()
-                        require"octo".setup()
+                        require('gitsigns').setup()
                 end
         }
         use {
-                "startup-nvim/startup.nvim",
-                requires = {"nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim"},
-                config = function()
-                        require"startup".setup({
-                                header = {
-                                        type = "text",
-                                        align = "center",
-                                        fold_section = false,
-                                        title = "Header",
-                                        margin = 5,
-                                        content = require('startup.headers').hydra_header,
-                                        highlight = "Statement",
-                                        default_color = "#FF0000",
-                                        oldfiles_amount = 0,
+                'feline-nvim/feline.nvim',
+                requires = { {'lewis6991/gitsigns.nvim'} },
+                config = function ()
+                        require('feline').setup()
+                end
+        }
+	use {
+		'nvim-telescope/telescope.nvim', tag = '0.1.0',
+		requires = { {'nvim-lua/plenary.nvim'} },
+                config = function ()
+                        require("telescope").setup({
+                                extensions = {
+                                        coc = {
+                                                theme = 'ivy',
+                                                prefer_locations = true, -- always use Telescope locations to preview definitions/declarations/implementations etc
+                                        }
                                 },
-                                header_2 = {
-                                        type = "text",
-                                        oldfiles_directory = false,
-                                        align = "center",
-                                        fold_section = false,
-                                        title = "Quote",
-                                        margin = 5,
-                                        content = require("startup.functions").quote(),
-                                        highlight = "Constant",
-                                        default_color = "",
-                                        oldfiles_amount = 0,
-                                },
-                                clock = {
-                                        type = "text",
-                                        content = function ()
-                                                local clock = "  " .. os.date("%H:%M")
-                                                local date = "  " .. os.date("%d-%m-%y")
-                                                return { clock, date }
-                                        end,
-                                        oldfiles_directory = false,
-                                        align = "center",
-                                        fold_section = false,
-                                        title = "",
-                                        margin = 5,
-                                        highlight = "TSString",
-                                        default_color = "#FFFFFF",
-                                        oldfiles_amount = 10,
-                                },
-                                footer = {
-                                        type = "text",
-                                        content = require("startup.functions").packer_plugins(),
-                                        oldfiles_directory = false,
-                                        align = "center",
-                                        fold_section = false,
-                                        title = "",
-                                        margin = 5,
-                                        highlight = "TSString",
-                                        default_color = "#FFFFFF",
-                                        oldfiles_amount = 10,
-                                },
-                                colors = {
-                                        folded_section = "#FF0000",
-                                },
-                                parts = {"header", "header_2", "clock", "footer"}
                         })
+                end
+	}
+        use {
+                'fannheyward/telescope-coc.nvim',
+                requires = { {'nvim-telescope/telescope.nvim', 'neoclide/coc.nvim'} },
+                config = function ()
+                        require('telescope').load_extension('coc')
+                end
+        }
+        use {
+                'goolord/alpha-nvim',
+                requires = { 'kyazdani42/nvim-web-devicons' },
+                config = function ()
+                        local dashboard = require('alpha.themes.dashboard')
+                        dashboard.section.header.val = {
+                                [[=================     ===============     ===============   ========  ========]],
+                                [[\\ . . . . . . .\\   //. . . . . . .\\   //. . . . . . .\\  \\. . .\\// . . //]],
+                                [[||. . ._____. . .|| ||. . ._____. . .|| ||. . ._____. . .|| || . . .\/ . . .||]],
+                                [[|| . .||   ||. . || || . .||   ||. . || || . .||   ||. . || ||. . . . . . . ||]],
+                                [[||. . ||   || . .|| ||. . ||   || . .|| ||. . ||   || . .|| || . | . . . . .||]],
+                                [[|| . .||   ||. _-|| ||-_ .||   ||. . || || . .||   ||. _-|| ||-_.|\ . . . . ||]],
+                                [[||. . ||   ||-'  || ||  `-||   || . .|| ||. . ||   ||-'  || ||  `|\_ . .|. .||]],
+                                [[|| . _||   ||    || ||    ||   ||_ . || || . _||   ||    || ||   |\ `-_/| . ||]],
+                                [[||_-' ||  .|/    || ||    \|.  || `-_|| ||_-' ||  .|/    || ||   | \  / |-_.||]],
+                                [[||    ||_-'      || ||      `-_||    || ||    ||_-'      || ||   | \  / |  `||]],
+                                [[||    `'         || ||         `'    || ||    `'         || ||   | \  / |   ||]],
+                                [[||            .===' `===.         .==='.`===.         .===' /==. |  \/  |   ||]],
+                                [[||         .=='   \_|-_ `===. .==='   _|_   `===. .===' _-|/   `==  \/  |   ||]],
+                                [[||      .=='    _-'    `-_  `='    _-'   `-_    `='  _-'   `-_  /|  \/  |   ||]],
+                                [[||   .=='    _-'          '-__\._-'         '-_./__-'         `' |. /|  |   ||]],
+                                [[||.=='    _-'                                                     `' |  /==.||]],
+                                [[=='    _-'                        N E O V I M                         \/   `==]],
+                                [[\   _-'                                                                `-_   /]],
+                                [[ `''                                                                      ``' ]]
+                        }
+                        dashboard.section.header.opts.hl = "Constant"
+                        local handle = io.popen('fortune')
+                        local fortune = handle:read('*a')
+                        handle:close()
+                        dashboard.section.footer.val = fortune
+                        require('alpha').setup(dashboard.config)
                 end
         }
 end)
@@ -122,6 +105,9 @@ vim.opt.termguicolors = true
 vim.opt.mouse = 'nv'
 vim.cmd[[language en_US]]
 
+
+vim.g.shell = "/bin/bash"
+
 require("nvim-tree").setup()
 
 vim.g.mapleader = " "
@@ -140,7 +126,6 @@ require'nvim-treesitter.configs'.setup {
         incremental_selection = { enable = true },
 }
 
-local keyset = vim.keymap.set
 
 if not vim.g.neovide then 
         vim.g.coc_global_extensions = {
@@ -191,15 +176,6 @@ if not vim.g.neovide then
         vim.api.nvim_create_user_command("Format", "call CocAction('format')", {})
 end
 
-require("telescope").setup({
-        extensions = {
-                coc = {
-                theme = 'ivy',
-                prefer_locations = true, -- always use Telescope locations to preview definitions/declarations/implementations etc
-                }
-        },
-})
-require('telescope').load_extension('coc')
 
 local builtin = require('telescope.builtin')
 keyset('n', '<leader>ff', builtin.find_files, {})
